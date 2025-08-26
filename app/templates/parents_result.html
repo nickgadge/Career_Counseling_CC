@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0">Parents Guidance Result / पालक मार्गदर्शन निकाल</h2>
+                <a href="{{ url_for('parents.parents_report_pdf') }}" class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i>Download PDF / PDF डाउनलोड करा
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parent and Student Info Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Parent Info -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-0 d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                        <i class="fas fa-user text-primary"></i>
+                    </div>
+                    <h5 class="card-title mb-0">Parent Information / पालक माहिती</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-column">
+                        <div class="mb-3">
+                            <small class="text-muted">Name / नाव</small>
+                            <p class="mb-0 fw-bold">{{ info.name }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Phone / फोन</small>
+                            <p class="mb-0 fw-bold">{{ info.phone }}</p>
+                        </div>
+                        <div>
+                            <small class="text-muted">Email / ईमेल</small>
+                            <p class="mb-0 fw-bold">{{ info.email }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Info -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-0 d-flex align-items-center">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3">
+                        <i class="fas fa-graduation-cap text-success"></i>
+                    </div>
+                    <h5 class="card-title mb-0">Student Overview / विद्यार्थी माहिती</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-column">
+                        <div class="mb-3">
+                            <small class="text-muted">Name / नाव</small>
+                            <p class="mb-0 fw-bold">{{ info.student_name }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Class / वर्ग</small>
+                            <p class="mb-0 fw-bold">{{ info.student_class }}</p>
+                        </div>
+                        <div>
+                            <small class="text-muted">Top Category / उत्कृष्ट क्षेत्र</small>
+                            {% set best_cat = percent|dictsort(reverse=True)|first %}
+                            <p class="mb-0 fw-bold">
+                                {{ category_labels[best_cat[0]]['en'] }} / {{ category_labels[best_cat[0]]['mr'] }} ({{ best_cat[1] }}%)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Scores and Chart -->
+    <div class="row g-4 mb-4">
+        <!-- Category Scores Table -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-chart-pie text-info me-2"></i>
+                        Category Scores / श्रेणी गुण
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Category / श्रेणी</th>
+                                    <th>Score / गुण</th>
+                                    <th>Interpretation / स्पष्टीकरण</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cat, pct in percent.items() %}
+                                <tr>
+                                    <td>
+                                        <div>{{ category_labels[cat]['en'] }}</div>
+                                        <div class="small text-muted">{{ category_labels[cat]['mr'] }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                <div class="progress-bar {% if pct < 60 %}bg-danger{% elif pct < 80 %}bg-warning{% else %}bg-success{% endif %}"
+                                                     role="progressbar" style="width: {{ pct }}%;"
+                                                     aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <span class="fw-bold">{{ pct }}%</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if pct >= 80 %}
+                                            <span class="badge bg-success">Excellent / उत्कृष्ट</span>
+                                        {% elif pct >= 60 %}
+                                            <span class="badge bg-warning">Good / चांगले</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Needs Attention / सुधारणा आवश्यक</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Visualization -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-chart-bar text-primary me-2"></i>
+                        Category Scores Visualization / श्रेणी गुणांचे ग्राफ
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How Parents Can Help -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-hands-helping text-warning me-2"></i>
+                        How Parents Can Help / पालक कसे मदत करू शकतात
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        {% for rec in recommendations %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-header bg-light border-0">
+                                    <h6 class="mb-0">{{ rec.cat_en }}</h6>
+                                    <small class="text-muted">{{ rec.cat_mr }}</small>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <strong class="small">EN Guidance:</strong>
+                                        <ul class="mb-0 ps-3">
+                                            {% for field in rec.fields_en %}
+                                            <li class="small">{{ field }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <strong class="small">MR मार्गदर्शन:</strong>
+                                        <ul class="mb-0 ps-3">
+                                            {% for field in rec.fields_mr %}
+                                            <li class="small">{{ field }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Future Career Options -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-briefcase text-success me-2"></i>
+                        Best Future Career Options / भविष्यकालीन सर्वोत्तम करिअर पर्याय
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Category / क्षेत्र</th>
+                                    <th>Recommended Careers (EN) / सुचवलेले करिअर</th>
+                                    <th>शिफारस केलेले करिअर (MR)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rec in recommendations %}
+                                <tr>
+                                    <td>
+                                        <div>{{ rec.cat_en }}</div>
+                                        <div class="small text-muted">{{ rec.cat_mr }}</div>
+                                    </td>
+                                    <td>{{ rec.fields_en | join(", ") }}</td>
+                                    <td>{{ rec.fields_mr | join(", ") }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary bg-opacity-5 border-0">
+                <div class="card-body text-center p-5">
+                    <i class="fas fa-star fa-2x text-warning mb-3"></i>
+                    <h4 class="mb-3">Your Support Makes The Difference! / तुमच्या पाठिंब्यामुळेच फरक पडतो!</h4>
+                    <p class="mb-0">As parents, your guidance and encouragement are crucial for your child's career development. Use these insights to support their strengths and interests.</p>
+                    <p class="mb-0">पालक म्हणून, तुमचे मार्गदर्शन आणि प्रोत्साहन तुमच्या मुलाच्या करिअर विकासासाठी निर्णायक ठरते. त्यांच्या सामर्थ्य आणि रुचींना समर्थन देण्यासाठी या insight चा वापर करा.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('categoryChart').getContext('2d');
+const categoryChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [{% for cat in percent.keys() %}'{{ category_labels[cat]['en'] }}', {% endfor %}],
+        datasets: [{
+            label: 'Percentage Score / टक्केवारी गुण',
+            data: [{% for cat, pct in percent.items() %}{{ pct }}, {% endfor %}],
+            backgroundColor: [
+                'rgba(103, 58, 183, 0.7)',
+                'rgba(33, 150, 243, 0.7)',
+                'rgba(0, 188, 212, 0.7)',
+                'rgba(76, 175, 80, 0.7)',
+                'rgba(255, 193, 7, 0.7)',
+                'rgba(255, 152, 0, 0.7)',
+                'rgba(244, 67, 54, 0.7)'
+            ],
+            borderColor: [
+                'rgba(103, 58, 183, 1)',
+                'rgba(33, 150, 243, 1)',
+                'rgba(0, 188, 212, 1)',
+                'rgba(76, 175, 80, 1)',
+                'rgba(255, 193, 7, 1)',
+                'rgba(255, 152, 0, 1)',
+                'rgba(244, 67, 54, 1)'
+            ],
+            borderWidth: 1,
+            borderRadius: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: 'Student Category Scores / विद्यार्थ्याचे श्रेणी गुण',
+                font: {
+                    size: 16
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                titleFont: {
+                    size: 14
+                },
+                bodyFont: {
+                    size: 14
+                },
+                padding: 10
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                    display: true,
+                    text: 'Percentage (%) / टक्केवारी (%)'
+                },
+                grid: {
+                    drawBorder: false
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+</script>
+
+<!-- Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<style>
+body {
+    background-color: #f8f9fa;
+}
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08) !important;
+}
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+.badge {
+    font-size: 0.75em;
+}
+.progress {
+    height: 8px;
+}
+</style>
+{% endblock %}

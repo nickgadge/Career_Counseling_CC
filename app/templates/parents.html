@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Parents Management</h2>
+            <p class="text-muted">Manage parent accounts and their connections to students</p>
+        </div>
+
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+                        <div>{{ message }}</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+
+
+    <!-- Filter and Search Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Search parents by name, phone or student..." id="parentSearch">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parents Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Parents List</h5>
+            <div class="d-flex">
+
+                <div class="dropdown">
+
+                    <ul class="dropdown-menu" aria-labelledby="viewOptions">
+                        <li><a class="dropdown-item" href="#">Compact View</a></li>
+                        <li><a class="dropdown-item" href="#">Detailed View</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Parent</th>
+                            <th>Contact Info</th>
+                            <th>Linked Student</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for parent in parents %}
+                        <tr>
+                            <td><span class="badge bg-secondary">#{{ parent.id }}</span></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle-sm bg-primary text-white me-3">
+                                        {{ parent.name[0]|upper if parent.name else 'P' }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ parent.name }}</div>
+                                        <small class="text-muted">Parent ID: {{ parent.id }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <div><i class="fas fa-phone text-muted me-2"></i> {{ parent.phone }}</div>
+                                    {% if parent.email %}
+                                    <div class="mt-1"><i class="fas fa-envelope text-muted me-2"></i> {{ parent.email }}</div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if parent.student_name %}
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-success me-2">Linked</span>
+                                    <div>{{ parent.student_name }}</div>
+                                </div>
+                                {% else %}
+                                <span class="badge bg-warning">Not Linked</span>
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No parents found</h5>
+                                    <p class="text-muted">There are no parent records in the database.</p>
+                                    <button class="btn btn-primary mt-2">
+                                        <i class="fas fa-plus me-1"></i> Add New Parent
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% if parents %}
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>Showing {{ parents|length }} of {{ parents|length }} parents</div>
+                <nav aria-label="Parents pagination">
+                    <ul class="pagination mb-0">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .stat-card {
+        border: none;
+        border-radius: 10px;
+        transition: transform 0.2s;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .avatar-circle-sm {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem;
+    }
+    
+    .table td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+    
+    .card-header {
+        border-bottom: 1px solid #e3e6f0;
+        border-top-left-radius: 10px !important;
+        border-top-right-radius: 10px !important;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(67, 97, 238, 0.05);
+    }
+</style>
+
+<script>
+    // Basic search functionality
+    document.getElementById('parentSearch').addEventListener('keyup', function() {
+        const searchText = this.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            if (text.includes(searchText)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+    
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
+{% endblock %}

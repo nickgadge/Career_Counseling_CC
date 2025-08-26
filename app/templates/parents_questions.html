@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="clean-parent-survey">
+
+  <!-- Header -->
+  <header class="survey-header text-center py-5">
+    <h1 class="main-title">Parents Guidance Questionnaire</h1>
+    <p class="subtitle">पालक मार्गदर्शन प्रश्नावली</p>
+  </header>
+
+  <main class="container survey-container">
+
+    <form method="POST" action="{{ url_for('parents.parents_submit') }}" id="cleanSurveyForm" aria-label="Parents Guidance Questionnaire Form">
+
+      <!-- Progress Bar -->
+      <div class="progress-wrapper mb-4" aria-label="Form progress">
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar"></div>
+        <div id="progressText" class="progress-text" aria-live="polite">Progress: 0%</div>
+      </div>
+
+      <!-- Questions -->
+      <section class="questions-list">
+        {% for q in questions %}
+        <article class="question-block" role="group" aria-labelledby="label-q{{ q.id }}">
+          <h2 class="question-text" id="label-q{{ q.id }}">
+            {{ q.id }}.
+            {% if q.category == 'logic' %}
+            Does your child face difficulties in solving problems at school?
+            {% elif q.category == 'arts' %}
+            Does your child participate in creative activities like drawing or music?
+            {% elif q.category == 'science' %}
+            Do you guide your child in doing small experiments or research at home?
+            {% elif q.category == 'social' %}
+            Do you encourage your child to interact with peers and build teamwork skills?
+            {% elif q.category == 'commerce' %}
+            Do you involve your child in basic money management or business ideas?
+            {% endif %}
+            <span class="marathi-text">
+              <br>
+              {% if q.category == 'logic' %}
+                आपल्या मुलाला शाळेत समस्या सोडवताना अडचणी येतात का?
+              {% elif q.category == 'arts' %}
+                आपल्या मुलाला चित्रकला किंवा संगीतासारख्या सर्जनशील क्रियाकलापात सहभागी होण्यास आवडते का?
+              {% elif q.category == 'science' %}
+                आपण आपल्या मुलाला घरच्या छोट्या प्रयोगांमध्ये किंवा संशोधनात मार्गदर्शन करता का?
+              {% elif q.category == 'social' %}
+                आपण आपल्या मुलाला सहकारी विद्यार्थ्यांसोबत संवाद साधण्यास आणि संघकार्य शिकण्यास प्रोत्साहित करता का?
+              {% elif q.category == 'commerce' %}
+                आपण आपल्या मुलाला मूलभूत आर्थिक व्यवस्थापन किंवा व्यवसाय कल्पनांमध्ये सहभागी करता का?
+              {% endif %}
+            </span>
+          </h2>
+          <fieldset class="options" aria-describedby="desc-q{{ q.id }}">
+            <legend id="desc-q{{ q.id }}" class="sr-only">Choose your level of agreement</legend>
+            <label>
+              <input type="radio" name="q{{ q.id }}" value="5" required>
+              <span>Strongly Agree / पूर्णपणे सहमत</span>
+            </label>
+            <label>
+              <input type="radio" name="q{{ q.id }}" value="4">
+              <span>Agree / सहमत</span>
+            </label>
+            <label>
+              <input type="radio" name="q{{ q.id }}" value="3">
+              <span>Neutral / तटस्थ</span>
+            </label>
+            <label>
+              <input type="radio" name="q{{ q.id }}" value="2">
+              <span>Disagree / असहमत</span>
+            </label>
+            <label>
+              <input type="radio" name="q{{ q.id }}" value="1">
+              <span>Strongly Disagree / पूर्णपणे असहमत</span>
+            </label>
+          </fieldset>
+        </article>
+        {% endfor %}
+      </section>
+
+      <!-- Submit Button -->
+      <div class="submit-area text-center mt-5">
+        <button type="submit" class="btn-submit" aria-label="Submit Parents Guidance Questionnaire">
+          Submit / सादर करा
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <footer class="footer text-center py-4">
+    <small>© 2025 MyCareerPath — Supporting Parents & Students</small>
+  </footer>
+
+</div>
+
+<style>
+  /* Base Reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #f9fafc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .clean-parent-survey {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  .survey-header {
+    background: #fff;
+    color: #0a3d62;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.05);
+  }
+  .main-title {
+    font-weight: 700;
+    font-size: 2.8rem;
+    margin-bottom: 0.3rem;
+  }
+  .subtitle {
+    font-style: italic;
+    color: #718093;
+    font-size: 1.1rem;
+  }
+
+  /* Container */
+  .survey-container {
+    flex: 1;
+    max-width: 720px;
+    margin: 2rem auto 4rem;
+    padding: 0 1rem;
+  }
+
+  /* Progress bar */
+  .progress-wrapper {
+    margin-bottom: 1.5rem;
+  }
+  .progress-bar {
+    width: 0%;
+    height: 8px;
+    background: linear-gradient(90deg, #45aaf2, #66cc99);
+    border-radius: 4px;
+    transition: width 0.4s ease-in-out;
+  }
+  .progress-text {
+    font-size: 0.9rem;
+    color: #222;
+    margin-top: 8px;
+    user-select: none;
+  }
+
+  /* Question blocks */
+  .questions-list > article {
+    background: white;
+    padding: 1.8rem 2.2rem;
+    margin-bottom: 2.2rem;
+    border-radius: 14px;
+    border: 1px solid #e8e9eb;
+    box-shadow: 0 3px 12px rgb(102 204 153 / 0.1);
+    transition: border-color 0.3s ease;
+  }
+  .questions-list > article:focus-within {
+    outline: none;
+    border-color: #66cc99;
+  }
+
+  /* Question text */
+  .question-text {
+    font-family: 'Segoe UI Semibold', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin-bottom: 0.65rem;
+    color: #192a56;
+  }
+  .marathi-text {
+    color: #7b8ca1;
+    font-style: normal;
+    font-size: 1rem;
+  }
+
+  /* Options styling */
+  fieldset.options {
+    border: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  label {
+    cursor: pointer;
+    border: 2px solid #dcdde1;
+    padding: 0.85rem 1.2rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 1.05rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  label:hover,
+  label:focus-within {
+    background-color: #f1f6f4;
+    border-color: #45aaf2;
+    outline: none;
+  }
+  input[type="radio"] {
+    margin-right: 10px;
+    cursor: pointer;
+    accent-color: #45aaf2;
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Submit button */
+  .submit-area {
+    margin-top: 3rem;
+  }
+  .btn-submit {
+    background-color: #45aaf2;
+    color: white;
+    font-weight: 700;
+    padding: 1rem 3.5rem;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgb(69 170 242 / 0.45);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  .btn-submit:hover,
+  .btn-submit:focus-visible {
+    background-color: #3a8ddb;
+    outline: none;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 1.8rem 0;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #95a5a6;
+    user-select: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .main-title {
+      font-size: 2.2rem;
+    }
+    .marathi-text {
+      font-size: 0.9rem;
+    }
+    fieldset.options {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    label {
+      font-size: 1rem;
+    }
+    .btn-submit {
+      font-size: 1.1rem;
+      padding: 0.9rem 3rem;
+    }
+  }
+  @media (max-width: 480px) {
+    .survey-container {
+      margin: 1.5rem 1rem 3rem;
+    }
+    fieldset.options {
+      grid-template-columns: 1fr;
+    }
+    label {
+      font-size: 0.95rem;
+      padding: 0.75rem 1rem;
+    }
+    .btn-submit {
+      font-size: 1rem;
+      padding: 0.85rem 2.8rem;
+    }
+  }
+
+  /* Utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('cleanSurveyForm');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const questions = Array.from(form.querySelectorAll('.question-block'));
+    const totalQuestions = questions.length;
+
+    function updateProgress() {
+      let answeredCount = 0;
+      questions.forEach(q => {
+        const checked = q.querySelector('input[type="radio"]:checked');
+        if (checked) answeredCount++;
+      });
+      const progressPercent = Math.round((answeredCount / totalQuestions) * 100);
+      progressBar.style.width = progressPercent + '%';
+      progressBar.setAttribute('aria-valuenow', progressPercent);
+      progressText.textContent = `Progress: ${progressPercent}%`;
+    }
+
+    form.addEventListener('change', updateProgress);
+    updateProgress();
+  });
+</script>
+</div>
+{% endblock %}

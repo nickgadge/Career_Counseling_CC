@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="parents-container">
+    <div class="row justify-content-center">
+            <!-- Form Section -->
+            <div class="parents-form-card">
+                <div class="form-header">
+                    <h2 class="mb-2">Parent Information Form</h2>
+                    <p class="text-muted">Please fill in the details below / कृपया खालील माहिती भरा</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('parents.parents_details_submit') }}">
+                    <div class="row">
+                        <!-- Parent Name -->
+                        <div class="col-md-6 mb-4">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-user me-2"></i>Parent Name / पालकाचे नाव
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-lg" id="name" name="name" required>
+                            <div class="form-text">Please enter your full name</div>
+                        </div>
+
+                        <!-- Parent Phone -->
+                        <div class="col-md-6 mb-4">
+                            <label for="phone" class="form-label">
+                                <i class="fas fa-phone me-2"></i>Parent Phone / फोन नंबर
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-lg" id="phone" name="phone" required>
+                            <div class="form-text">We'll never share your number</div>
+                        </div>
+
+<!--                        &lt;!&ndash; Parent Email &ndash;&gt;-->
+<!--                        <div class="col-md-6 mb-4">-->
+<!--                            <label for="email" class="form-label">-->
+<!--                                <i class="fas fa-envelope me-2"></i>Parent Email / ईमेल-->
+<!--                            </label>-->
+<!--                            <input type="email" class="form-control form-control-lg" id="email" name="email">-->
+<!--                            <div class="form-text">Optional - for important updates</div>-->
+<!--                        </div>-->
+
+                        <!-- Student Name -->
+                        <div class="col-md-6 mb-4">
+                            <label for="student_name" class="form-label">
+                                <i class="fas fa-graduation-cap me-2"></i>Student Name / विद्यार्थ्याचे नाव
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-lg" id="student_name" name="student_name" required>
+                            <div class="form-text">Your child's full name</div>
+                        </div>
+
+                        <!-- Student Class -->
+                        <div class="col-md-6 mb-4">
+                            <label for="student_class" class="form-label">
+                                <i class="fas fa-book me-2"></i>Student Class / विद्यार्थ्याची वर्ग
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-select-lg" id="student_class" name="student_class" required>
+                                <option value="" selected disabled>Select Class / वर्ग निवडा</option>
+                                <option value="5th">5th Standard / 5वी</option>
+                                <option value="6th">6th Standard / 6वी</option>
+                                <option value="7th">7th Standard / 7वी</option>
+                                <option value="8th">8th Standard / 8वी</option>
+                                <option value="9th">9th Standard / 9वी</option>
+                                <option value="10th">10th Standard / 10वी</option>
+                                <option value="11th">11th Standard / 11वी</option>
+                                <option value="12th">12th Standard / 12वी</option>
+                            </select>
+                            <div class="form-text">Select your child's current class</div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-play-circle me-2"></i>Start Questionnaire / प्रश्नावली सुरू करा
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+
+
+<style>
+    .parents-container {
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+    }
+
+    .parents-header {
+        padding: 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .parents-header h1 {
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .parents-form-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--primary-light);
+    }
+
+    .form-header h2 {
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.8rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.8rem 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+    }
+
+    .form-control-lg {
+        font-size: 1.1rem;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+        color: var(--secondary);
+        margin-top: 0.5rem;
+    }
+
+    .btn-primary {
+        background: var(--gradient-primary);
+        border: none;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+    }
+
+    .parents-info {
+        margin-top: 3rem;
+    }
+
+    .info-card {
+        background: white;
+        padding: 2rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .info-icon {
+        width: 70px;
+        height: 70px;
+        background: var(--primary-light);
+        color: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    .info-card h4 {
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .info-card p {
+        color: var(--secondary);
+        line-height: 1.6;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .parents-container {
+            padding: 1rem 0;
+        }
+
+        .parents-header {
+            padding: 1.5rem;
+        }
+
+        .parents-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .parents-form-card {
+            padding: 1.5rem;
+        }
+
+        .form-header {
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+        }
+
+        .info-card {
+            margin-bottom: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation to info cards
+        const infoCards = document.querySelectorAll('.info-card');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        infoCards.forEach(card => {
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(card);
+        });
+
+        // Form validation enhancement
+        const form = document.querySelector('form');
+        const inputs = form.querySelectorAll('input, select');
+
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.add('filled');
+                } else {
+                    this.classList.remove('filled');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
